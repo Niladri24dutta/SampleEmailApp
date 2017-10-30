@@ -5,19 +5,40 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SendGrid;
 using SendGrid.Helpers.Mail;
-
-
+using Microsoft.Extensions.Configuration;
 
 namespace SendgridMailApp.Controllers
 {
     [Route("api/[controller]")]
     public class NotificationController : Controller
     {
+        private readonly IConfiguration _configuration;
 
-        // POST api/values
-        [HttpPost(Name ="SendEmail")]
-        public void Post([FromBody]string value)
+        public NotificationController(IConfiguration configuration)
         {
+            _configuration = configuration;
+        }
+               
+        public async Task Post()
+        {
+            var apiKey = _configuration.GetSection("SENDGRID_API_KEY").Value;
+            List<EmailAddress> tos = new List<EmailAddress>
+            {
+                new EmailAddress("recipient1@example.com", "Recipient 1"),
+                new EmailAddress("recipient2@example.com", "Recipient 2")
+            };
+            var client = new SendGridClient(apiKey);
+            var msg = new SendGridMessage();
+            var from = new EmailAddress("noreply@example.com", "Sendgrid user");
+            var subject = "Hello world email from Sendgrid ";
+            var cc = new EmailAddress("ccemail@example.com", "Recipient CC");
+            var htmlContent = "<strong>Hello world in HTML content</strong>";
+            msg.SetSubject(subject);
+            msg.SetFrom(from);
+            msg.AddTos(tos);
+            msg.AddCc(cc);
+            msg.AddContent(MimeType.Html, htmlContent);
+            var response = await client.SendEmailAsync(msg);
         }
 
         
