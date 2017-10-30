@@ -18,19 +18,26 @@ namespace SendgridMailApp.Controllers
         {
             _configuration = configuration;
         }
-        [HttpPost(Name ="SendEmail")]
-        public async Task Post([FromBody]string value)
+               
+        public async Task Post()
         {
             var apiKey = _configuration.GetSection("SENDGRID_API_KEY").Value;
-            //var apiKey = Environment.GetEnvironmentVariable("NAME_OF_THE_ENVIRONMENT_VARIABLE_FOR_YOUR_SENDGRID_KEY");
+            List<EmailAddress> tos = new List<EmailAddress>
+            {
+                new EmailAddress("recipient1@example.com", "Recipient 1"),
+                new EmailAddress("recipient2@example.com", "Recipient 2")
+            };
             var client = new SendGridClient(apiKey);
+            var msg = new SendGridMessage();
             var from = new EmailAddress("noreply@example.com", "Sendgrid user");
             var subject = "Hello world email from Sendgrid ";
-
-            var to = new EmailAddress("tests@mail.com", "Example User");
-            var plainTextContent = "and easy to do anywhere, even with C#";
-            var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
-            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+            var cc = new EmailAddress("ccemail@example.com", "Recipient CC");
+            var htmlContent = "<strong>Hello world in HTML content</strong>";
+            msg.SetSubject(subject);
+            msg.SetFrom(from);
+            msg.AddTos(tos);
+            msg.AddCc(cc);
+            msg.AddContent(MimeType.Html, htmlContent);
             var response = await client.SendEmailAsync(msg);
         }
 
