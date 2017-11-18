@@ -24,14 +24,14 @@ namespace SendgridMailApp.Controllers
             var apiKey = _configuration.GetSection("SENDGRID_API_KEY").Value;
             List<EmailAddress> tos = new List<EmailAddress>
             {
-                new EmailAddress("recipient1@example.com", "Recipient 1"),
-                new EmailAddress("recipient2@example.com", "Recipient 2")
+                new EmailAddress("srkrocks0@gmail.com", "Recipient 1"),
+                new EmailAddress("niladridutta10@yahoo.in", "Recipient 2")
             };
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage();
             var from = new EmailAddress("noreply@example.com", "Sendgrid user");
             var subject = "Hello world email from Sendgrid ";
-            var cc = new EmailAddress("ccemail@example.com", "Recipient CC");
+            var cc = new EmailAddress("nild2141@gmail.com", "Recipient CC");
             var htmlContent = "<strong>Hello world in HTML content</strong>";
             msg.SetSubject(subject);
             msg.SetFrom(from);
