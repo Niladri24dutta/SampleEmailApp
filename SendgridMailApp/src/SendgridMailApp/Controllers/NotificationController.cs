@@ -18,7 +18,8 @@ namespace SendgridMailApp.Controllers
         {
             _configuration = configuration;
         }
-               
+        
+        [HttpPost()]       
         public async Task Post()
         {
             var apiKey = _configuration.GetSection("SENDGRID_API_KEY").Value;
